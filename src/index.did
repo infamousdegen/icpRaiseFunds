@@ -1,0 +1,31 @@
+type ManualReply = variant { Ok : nat; Err : text };
+type ManualReply_1 = variant { Ok : text; Err : text };
+type Message = record {
+  id : nat;
+  active : bool;
+  createdAt : nat64;
+  addressRecepient : principal;
+  addressRaiser : principal;
+  expiry : nat64;
+  amount : nat;
+};
+type _AzleResult = variant { Ok : Message; Err : text };
+type _AzleResult_1 = variant { Ok : nat; Err : text };
+type _AzleResult_2 = variant { Ok : text; Err : text };
+type initFundPayload = record {
+  duration : nat64;
+  addressRecepient : principal;
+  amount : nat;
+};
+service : () -> {
+  checkRaised : (nat) -> (ManualReply) query;
+  createNewFund : (initFundPayload) -> (_AzleResult);
+  donate : (nat) -> (ManualReply_1);
+  getAddressToDeposit : () -> (text) query;
+  pauseFund : (nat) -> (_AzleResult);
+  restartFund : (nat) -> (_AzleResult);
+  updateDuration : (nat, nat64) -> (_AzleResult);
+  updateFees : (nat) -> (_AzleResult_1);
+  updateVaultAddress : (principal) -> (_AzleResult_2);
+  withdrawFund : (nat, text) -> (_AzleResult_2);
+}
