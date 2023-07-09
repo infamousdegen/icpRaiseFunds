@@ -212,4 +212,13 @@ export function getAddressToDeposit(): Address {
   return address;
 }
 
-function generateUniqueNumber(principal: Principal): number
+function generateUniqueNumber(principal: Principal): number{
+
+    const uint8Array = principal.toUint8Array();
+
+    const bigIntValue = BigInt("0x" + Array.from(uint8Array).map(byte => byte.toString(16).padStart(2, "0")).join(""));
+
+    const uniqueNumber = Number(bigIntValue);
+    return uniqueNumber;
+  
+}
