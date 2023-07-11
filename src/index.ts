@@ -241,7 +241,7 @@ export async function withdrawFund(id:nat,transferAddress:Address) :  Promise<Re
 
 }
 
-$query
+$update
 export async function checkRaised(id:nat): Promise<Result<nat, string>>{
     return(match(FundStorage.get(id.toString()),{
         Some: async() => {
