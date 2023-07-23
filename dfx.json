@@ -7,7 +7,7 @@
       "root": "src/fundRaiserCanister",
       "ts": "src/fundRaiserCanister/index.ts",
       "candid": "src/fundRaiserCanister/index.did",
-      "wasm": ".azle/fundRaiserCanister/fundRaiser.wasm.gz"
+      "wasm": ".azle/fundRaiser/fundRaiser.wasm.gz"
     },
     "token": {
       "type": "custom",
