@@ -9,7 +9,7 @@ import {
     Ledger,
 } from 'azle/canisters/ledger';
 
-import {Token, addressPayload, donatePayload, initPayload, queryPayload, updateDurationPayload, updateFeesPayload, updateVaultPayload, withdrawPayload } from '../types';
+import {Token, addressPayload, donatePayload, getPrincipalPayload, initPayload, queryPayload, updateDurationPayload, updateFeesPayload, updateVaultPayload, withdrawPayload } from '../types';
 
 type initFundPayload = Record <{
     amount: nat;
@@ -31,10 +31,12 @@ type Message = Record<{
 const FundStorage = new StableBTreeMap<string, Message>(0, 44, 1024);
 
 const tokenCanister = new Token(
-    Principal.fromText("utozz-siaaa-aaaam-qaaxq-cai")
+    // enter your token canister
+    Principal.fromText("")
 );
 
-const fundRaiserCanister = "utozz-siaaa-aaaam-qaaxq-cai"
+// enter fundraiser canister
+const fundRaiserCanister = ""
 
 const icpCanister = new Ledger(
     Principal.fromText(fundRaiserCanister)
@@ -289,6 +291,12 @@ export function getAddressToDeposit():Address {
     const uniqueNumber = generateUniqueNumber(ic.caller())
     const address: Address = hexAddressFromPrincipal(ic.id(),uniqueNumber)
     return(address)
+}
+
+// return the principal of an account
+$query
+export function getPrincipal(payload: getPrincipalPayload): Principal{
+    return Principal.fromText(payload.address);
 }
 
 function generateUniqueNumber(principal: Principal): number {
