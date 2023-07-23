@@ -41,10 +41,6 @@ export type updateVaultPayload = Record<{
     address: Principal;
 }>
 
-export type getPrincipalPayload = Record<{
-    address: string;
-}>
-
 export type initPayload = Record<{
     // network: local:0 or mainnet:1
     network: int8
