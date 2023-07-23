@@ -1,13 +1,21 @@
 {
   "canisters": {
-    "message_board": {
+    "fundRaiser": {
       "main": "src/index.ts",
       "type": "custom",
-      "build": "npx azle message_board",
-      "root": "src",
-      "ts": "src/index.ts",
-      "candid": "src/index.did",
-      "wasm": ".azle/message_board/message_board.wasm.gz"
+      "build": "npx azle fundRaiser",
+      "root": "src/fundRaiserCanister",
+      "ts": "src/fundRaiserCanister/index.ts",
+      "candid": "src/fundRaiserCanister/index.did",
+      "wasm": ".azle/fundRaiserCanister/fundRaiser.wasm.gz"
+    },
+    "token": {
+      "type": "custom",
+      "build": "npx azle token",
+      "root": "src/tokenCanister",
+      "ts": "src/tokenCanister/index.ts",
+      "candid": "src/tokenCanister/index.did",
+      "wasm": ".azle/token/token.wasm.gz"
     }
   }
 }
