@@ -31,10 +31,12 @@ type Message = Record<{
 const FundStorage = new StableBTreeMap<string, Message>(0, 44, 1024);
 
 const tokenCanister = new Token(
-    Principal.fromText("utozz-siaaa-aaaam-qaaxq-cai")
+    // token canister address
+    Principal.fromText("")
 );
 
-const fundRaiserCanister = "utozz-siaaa-aaaam-qaaxq-cai"
+// enter fund raiser canister address
+const fundRaiserCanister = ""
 
 const icpCanister = new Ledger(
     Principal.fromText(fundRaiserCanister)
