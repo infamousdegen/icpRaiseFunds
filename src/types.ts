@@ -30,7 +30,7 @@ export type withdrawPayload = Record<{
 
 export type updateDurationPayload = Record<{
     id: nat; 
-    duration: nat64;
+    duration: nat;
 }>
 
 export type updateFeesPayload = Record<{
@@ -41,10 +41,11 @@ export type updateVaultPayload = Record<{
     address: Principal;
 }>
 
-export type initPayload = Record<{
-    // network: local:0 or mainnet:1
-    network: int8
-}>
+// export type initPayload = Record<{
+//     // network: local:0 or mainnet:1
+//     network: int8
+//     tokenCanisterAddress:string
+// }>
 
 export type Account = {
     address: string;

@@ -1,5 +1,5 @@
 import { $query, $update,$init, Record, StableBTreeMap, 
-     match, Result, nat,nat64, ic, Opt,Principal, blob, int8 } from 'azle';
+     match, Result, nat,nat64, ic, Opt,Principal, blob, int8,Vec } from 'azle';
 
 import {
     Address,
@@ -9,12 +9,12 @@ import {
     Ledger,
 } from 'azle/canisters/ledger';
 
-import {Token, addressPayload, donatePayload, initPayload, queryPayload, updateDurationPayload, updateFeesPayload, updateVaultPayload, withdrawPayload } from '../types';
+import {Token, addressPayload, donatePayload, queryPayload, updateDurationPayload, updateFeesPayload, updateVaultPayload, withdrawPayload } from '../types';
 
 type initFundPayload = Record <{
     amount: nat;
     addressRecepient: Principal;
-    duration: nat64;
+    duration: nat;
 }>
 
 type Message = Record<{
@@ -30,16 +30,14 @@ type Message = Record<{
 
 const FundStorage = new StableBTreeMap<string, Message>(0, 44, 1024);
 
-const tokenCanister = new Token(
-    // token canister address
-    Principal.fromText("")
-);
+let tokenCanister:Token
 
 // enter fund raiser canister address
-const fundRaiserCanister = ""
+let fundRaiserCanister:string; 
 
+//temporarily
 const icpCanister = new Ledger(
-    Principal.fromText(fundRaiserCanister)
+    Principal.fromText("bkyz2-fmaaa-aaaaa-qaaaq-cai")
 );
 
 let owner: Principal;
@@ -48,22 +46,47 @@ let fees: nat;
 let id: nat;
 let network: int8;
 
+
+//This function will deploy the canister locally 
+
 $update;
-export async function initialize(payload: initPayload): Promise<Result<string, string>>{
+export function initialise(_network:int8,tokenAddress:string):void{
     owner = ic.caller();
     vault = ic.caller();
     fees = 0n;
     id = 0n;
+    
+    tokenCanister = new Token(Principal.fromText(tokenAddress));
+
+    fundRaiserCanister = ic.id().toString();
+
+    if(_network == 0){
+        network = 0;
+    }else if(_network == 1){
+        network =1;
+
+    }
+    else{
+        ic.trap("Invalid network option choose 0 or 1")
+    }
+}
+
+
+$update;
+export async function initializeBalance(): Promise<Result<string, string>>{
 
     // set up network for testing
-    if (payload.network == 0){
-         //set up dummyTokens
-        network = 0;
-        await tokenCanister.initializeSupply('ICToken', fundRaiserCanister, 'ICT', 1_000_000_000_000n).call();
-    }else{
-        network = 1;
+    if (network == 0){
+
+        const returnValue = await tokenCanister.initializeSupply('ICToken', fundRaiserCanister, 'ICT', 1_000_000_000_000n).call();
+        if (returnValue.Ok){
+            return Result.Ok<string,string>("Fund initialised")
+        }
+        else if(returnValue.Err){
+            return Result.Err<string,string>(returnValue.Err)
+        }
     }
-    return Result.Ok<string, string>("Fund Raiser Initialized");
+    return Result.Err<string, string>(`network is set to ${network}`);
 }
 
 $update;
@@ -91,7 +114,7 @@ export function updateDuration(payload: updateDurationPayload): Result<Message,s
     return match(FundStorage.get(payload.id.toString()),{
         Some:(message) =>{
             
-            if(message.addressRaiser != ic.caller()){
+            if(message.addressRaiser.toString() != ic.caller().toString()){
                 ic.trap("You are not the owner of this id");
             }
             
@@ -108,10 +131,10 @@ export function updateDuration(payload: updateDurationPayload): Result<Message,s
 $update
 export function createNewFund(payload: initFundPayload) : Result<Message, string> {
     let expiryForThis = ic.time() + payload.duration;
-    
+    let caller = ic.caller();
     const message : Message = {
         id: id,
-        addressRaiser: ic.caller(),
+        addressRaiser: caller,
         createdAt: ic.time(),
         expiry: expiryForThis,
         active:true, 
@@ -130,8 +153,8 @@ export function pauseFund(payload: queryPayload) :Result<Message,string>{
     return match(FundStorage.get(payload.id.toString()),{
         Some:(message) =>{
             
-            if(message.addressRaiser != ic.caller()){
-                ic.trap("You are not the owner of this id");
+            if(message.addressRaiser.toString() != ic.caller().toString()){
+                ic.trap(`Raiser = ${message.addressRaiser.toUint8Array()}  caller = ${ic.caller().toUint8Array()}`);
             }
             
             const updateMessage = {...message, active : false};
@@ -149,7 +172,7 @@ export function restartFund(payload: queryPayload) :Result<Message,string>{
     return match(FundStorage.get(payload.id.toString()),{
         Some:(message) =>{
             
-            if(message.addressRaiser != ic.caller()){
+            if(message.addressRaiser.toString() != ic.caller().toString()){
                 ic.trap("You are not the owner of this id");
             }
             
@@ -165,7 +188,7 @@ $update
 export async function donate(payload: donatePayload): Promise<Result<string,string>>{
     return match(FundStorage.get(payload.id.toString()),{
         Some: async(message) =>{
-            if(message.active === false || message.expiry > ic.time()){
+            if(message.active === false || message.expiry < ic.time()){
                 throw `Either fund is not active or expiry has passed   `; 
             }
 
@@ -219,11 +242,11 @@ $update
 export async function withdrawFund(payload: withdrawPayload) :  Promise<Result<string, string>> {
     return(match(FundStorage.get(payload.id.toString()),{
         Some: async(message) =>{
-            if(ic.caller() != message.addressRecepient){
+            if(ic.caller().toString() != message.addressRecepient.toString()){
                 ic.trap("You cannot withdraw")
             }
 
-            if(message.amount < message.totalAmountFunded){
+            if(message.amount > message.totalAmountFunded){
                 ic.trap("Target has not been reached")
             }
 
@@ -286,6 +309,10 @@ export async function checkRaised(payload: queryPayload): Promise<Result<nat, st
     }))
 }
 
+$query
+export function getAllCanisters():Result<Vec<Message>,string> {
+    return Result.Ok(FundStorage.values())
+}
 $query
 export function getAddressToDeposit():Address {
     const uniqueNumber = generateUniqueNumber(ic.caller())
