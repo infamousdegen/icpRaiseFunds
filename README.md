@@ -45,3 +45,13 @@ Step 7: **withdrawFund**: Once the target amount has reached the user can withdr
             Parameters:
                 id: The id of the fund 
                 duration : nanoseconds 
+
+
+# Mainnet Deployment
+
+Make sure to reaplce the **icpCanister** with the principal address of the tokenw with which you will be interacting with 
+
+Step1: **Initialise the fundRaiser** call the "initialise" function with first parameter as the network (whether local network or the mainnet), as we are testing on the main network we pass in 1 and second parameter as the token address with which you will be interacting with 
+
+Step2: The rest of the flow such as createFund and donate can be performed normall as mentioned above 
+
