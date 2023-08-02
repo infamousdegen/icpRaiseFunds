@@ -32,18 +32,21 @@ Step 7: **withdrawFund**: Once the target amount has reached the user can withdr
 ## Misc Functions 
 
 **checkRaised**: To check the total amount raised so far for a particular fund 
+                
                 Parameters:
                     id: The id of the fund
 
 **getAllFunds**: Returns all the details of all the funds 
 
 **pauseFund**: If for some reason you want to pause a fund you can call this function 
+            
             Parameters: 
                 id: The id of the fund 
 
 **restartFund**: If you want to restart the fund again once paused 
 
 **updateDuration**: If you want to change the duration of the fund . Note: This will take calculate from the time of fund creation 
+            
             Parameters:
                 id: The id of the fund 
                 duration : nanoseconds 
