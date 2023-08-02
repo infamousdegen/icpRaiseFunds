@@ -20,7 +20,7 @@ Step 6: **donate**: A user can donate to a fund by calling this function
                     Parameters:
                         id: The id of the fund you want to fund 
                         amount: The amount you want to fund 
-*
+
 Step 7: **withdrawFund**: Once the target amount has reached the user can withdraw the funds 
                         
                         Paremeters:
