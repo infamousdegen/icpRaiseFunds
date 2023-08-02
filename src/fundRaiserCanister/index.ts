@@ -9,7 +9,7 @@ import {
     Ledger,
 } from 'azle/canisters/ledger';
 
-import {Token, addressPayload, donatePayload, queryPayload, updateDurationPayload, updateFeesPayload, updateVaultPayload, withdrawPayload } from '../types';
+import {Token, addressPayload, donatePayload, queryPayload, updateDurationPayload, updateFeesPayload, withdrawPayload } from '../types';
 
 type initFundPayload = Record <{
     amount: nat;
@@ -41,7 +41,7 @@ const icpCanister = new Ledger(
 );
 
 let owner: Principal;
-let vault: Principal;
+
 let fees: nat;
 let id: nat;
 let network: int8;
@@ -52,7 +52,7 @@ let network: int8;
 $update;
 export function initialise(_network:int8,tokenAddress:string):void{
     owner = ic.caller();
-    vault = ic.caller();
+
     fees = 0n;
     id = 0n;
     
@@ -89,14 +89,7 @@ export async function initializeBalance(): Promise<Result<string, string>>{
     return Result.Err<string, string>(`network is set to ${network}`);
 }
 
-$update;
-export function updateVaultAddress(payload: updateVaultPayload) :Result<string,string> {
-    if(ic.caller() == owner){
-        vault = payload.address;
-        return(Result.Ok(vault.toString()));
-    }
-    throw `Method "${ic.methodName()}" cannot be called by you `;
-}
+
 
 $update
 export function updateFees(payload: updateFeesPayload) : Result<nat,string> {
@@ -126,7 +119,7 @@ export function updateDuration(payload: updateDurationPayload): Result<Message,s
         None: () => Result.Err<Message,string>("Id not found")
     })
 }
-
+"2vxsx-fae"
 //@note: To start a new fund 
 $update
 export function createNewFund(payload: initFundPayload) : Result<Message, string> {
@@ -198,6 +191,7 @@ export async function donate(payload: donatePayload): Promise<Result<string,stri
                 if(!status){
                     ic.trap("Failed to Donate")
                 }
+
             } else {
                 const toSubAccount: blob = binaryAddressFromPrincipal(ic.id(),Number(id))
                 const uniqueNumber = generateUniqueNumber(ic.caller())
@@ -310,7 +304,7 @@ export async function checkRaised(payload: queryPayload): Promise<Result<nat, st
 }
 
 $query
-export function getAllCanisters():Result<Vec<Message>,string> {
+export function getAllFunds():Result<Vec<Message>,string> {
     return Result.Ok(FundStorage.values())
 }
 $query

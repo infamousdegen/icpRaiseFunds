@@ -15,7 +15,6 @@ type Message = record {
 type _AzleResult = variant { Ok : Message; Err : text };
 type _AzleResult_1 = variant { Ok : vec Message; Err : text };
 type _AzleResult_2 = variant { Ok : nat; Err : text };
-type _AzleResult_3 = variant { Ok : text; Err : text };
 type addressPayload = record { address : text };
 type donatePayload = record { id : nat; amount : nat };
 type initFundPayload = record {
@@ -26,7 +25,6 @@ type initFundPayload = record {
 type queryPayload = record { id : nat };
 type updateDurationPayload = record { id : nat; duration : nat };
 type updateFeesPayload = record { newFees : nat };
-type updateVaultPayload = record { address : principal };
 type withdrawPayload = record { id : nat; transferAddress : text };
 service : () -> {
   checkRaised : (queryPayload) -> (ManualReply);
@@ -41,7 +39,6 @@ service : () -> {
   restartFund : (queryPayload) -> (_AzleResult);
   updateDuration : (updateDurationPayload) -> (_AzleResult);
   updateFees : (updateFeesPayload) -> (_AzleResult_2);
-  updateVaultAddress : (updateVaultPayload) -> (_AzleResult_3);
   walletBalance : (addressPayload) -> (ManualReply_3);
-  withdrawFund : (withdrawPayload) -> (_AzleResult_3);
+  withdrawFund : (withdrawPayload) -> (ManualReply_1);
 }
