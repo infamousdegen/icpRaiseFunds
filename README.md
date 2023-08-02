@@ -11,18 +11,21 @@ Step 3: **IntializeBalance** call this function to "mint" some test tokens to th
 Step 4: **getFaucetTokens** This function will transfer some tokens to the caller so he can test out the donate and other functions where tokens are requries 
 
 Step 5: **createNewFund** : This is the main function to createNewFund . The caller can create new "fund" which will store important details such as how much funds was raise , expiry and other details . Take note of the **id** as this will be required for other parts of the functions 
+         
          Parameters: 
                 duration : in nanseconds on how long the fund should run (eg: if it is 1 day then 1 day in nanoseconds as to be passed)
                 addressRecepient: For whom you are raising the funds for (only this address can withdraw in the end ) if you are raising for yoursel pass in your address
                 amount : The total amount you want to raise
 
 Step 6: **donate**: A user can donate to a fund by calling this function 
-                    Parameters:
+                    
+                Parameters:
                         id: The id of the fund you want to fund 
                         amount: The amount you want to fund 
 
 Step 7: **withdrawFund**: Once the target amount has reached the user can withdraw the funds 
-                        Paremeters:
+                        
+                        Parameters:
                             id: the id of the fund you want to withdraw (note: checks are done to make sure only valid user are allowed to call the contract)
                             transferAddress: the address to which the you want to transfer the funds 
 
